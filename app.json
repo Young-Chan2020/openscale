@@ -1,0 +1,3 @@
+{
+  "expo":{"name":"openScale","slug":"openscale-expo","scheme":"openscale","version":"0.1.0","orientation":"portrait","userInterfaceStyle":"automatic","plugins":["expo-router","expo-sqlite"],"experiments":{"typedRoutes":true},"ios":{"supportsTablet":true},"android":{"edgeToEdgeEnabled":true},"web":{"bundler":"metro"}}
+}

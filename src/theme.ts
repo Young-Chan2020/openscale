@@ -1,0 +1,1 @@
+export const colors={canvas:"#F5F6F8",surface:"#FFFFFF",surfaceSoft:"#F0F3F7",ink:"#17212F",secondary:"#5E6B7B",muted:"#8A95A3",border:"#E3E8EF",primary:"#315FCE",primarySoft:"#E8EEFF",teal:"#167D79",tealSoft:"#E4F5F2",amber:"#9A6513",amberSoft:"#FFF3D9",danger:"#B94A48",chart:"#4B70D6"}; export const radii={sm:12,md:18,lg:26}; export const spacing={sm:10,md:16,lg:22};

@@ -1,0 +1,4 @@
+export function calculateBmi(weightKg:number,heightCm:number):number|null{if(!(weightKg>0)||!(heightCm>0))return null;return Number((weightKg/((heightCm/100)**2)).toFixed(1));}
+export function calculateWeightDifference(currentKg:number,previousKg:number){return Number((currentKg-previousKg).toFixed(2));}
+export function classifyBmi(bmi:number|null){if(bmi==null||!Number.isFinite(bmi))return "Not available";if(bmi<18.5)return "Underweight";if(bmi<25)return "Normal range";if(bmi<30)return "Overweight";return "Obesity range";}
+export function weeklyWeightTrend(items:Array<{timestamp:number;weightKg:number|null}>){return items.filter((x):x is {timestamp:number;weightKg:number}=>x.weightKg!=null&&Number.isFinite(x.weightKg)).slice().sort((a,b)=>a.timestamp-b.timestamp).map(x=>({label:new Date(x.timestamp).toLocaleDateString(undefined,{month:"short",day:"numeric"}),weightKg:x.weightKg}));}
