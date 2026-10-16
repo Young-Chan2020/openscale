@@ -8,7 +8,7 @@ import {deleteMeasurement,listMeasurements} from "@/data/database";
 import type {Measurement} from "@/domain/measurement";
 import {formatWeight} from "@/domain/measurement";
 import {colors} from "@/theme";
-export default function 測量紀錄Screen(){
+export default function HistoryScreen(){
  const db=useSQLiteContext(),router=useRouter();const [items,setItems]=useState<Measurement[]>([]);
  const load=useCallback(async()=>setItems(await listMeasurements(db)),[db]);useFocusEffect(useCallback(()=>{void load();},[load]));
  const remove=(id:number)=>Alert.alert("要刪除這筆測量嗎？","這筆紀錄將會從此裝置永久刪除。",[{text:"保留",style:"cancel"},{text:"刪除",style:"destructive",onPress:()=>{void deleteMeasurement(db,id).then(load);}}]);
