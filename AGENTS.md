@@ -2,104 +2,77 @@
 
 ## Project Goal
 
-Rebuild the openScale app as a cross-platform React Native + Expo application, using this repository's `master` branch as the product reference. Recreate and adapt its UI, user workflows, domain logic, calculations, settings, and data-management features for iOS and Android. This is a port/reimplementation project, not an OKOK-only prototype.
+Rebuild openScale as a cross-platform React Native + Expo app, using `master` as the product reference. Prioritize faithful UI, workflows, domain logic, calculations, settings, and data-management parity before protocol-specific Bluetooth work.
 
-The goal is functional and visual feature parity where practical, while adapting Android-specific patterns to idiomatic React Native/Expo. Do not narrow the product to the user's current scale. Support a growing set of Bluetooth scale protocols through a modular architecture.
+## Current Priorities
+
+1. Keep every user-facing screen and message in Traditional Chinese (zh-TW) unless the user explicitly requests another language.
+2. Fix platform usability issues, especially iOS keyboard dismissal, safe-area behavior, and form scrolling.
+3. Port the reference app's existing screens and business logic accurately.
+4. Build general Bluetooth device discovery and diagnostics without claiming that discovery alone means weight data can be read.
+5. Add scale protocol adapters only after inspecting their packet formats and verifying them on real hardware or reliable captures.
 
 ## Source of Truth and Porting Approach
 
-- Treat `master` as the reference for existing behavior, screen content, settings, measurements, calculations, and workflows.
-- Before implementing a feature, inspect the corresponding master-branch screen, ViewModel/use case, model, repository, and tests where available.
-- Maintain a feature inventory mapping each reference feature to its Expo implementation and verification status.
-- Recreate the user-facing UI and behavior in TypeScript/React Native; do not mechanically translate Kotlin/Jetpack Compose syntax.
-- Preserve the intent, validation rules, measurement semantics, defaults, and edge cases of the original unless a platform difference requires a documented adaptation.
-- Do not start by validating or prioritizing OKOK. Build the product foundations and port the general app first; Bluetooth protocols are a separate workstream and should be added in a scalable way.
-- Never claim a feature is ported until it has been implemented and verified.
+- Treat `master` as the reference for screens, settings, measurement semantics, calculations, and workflows.
+- Inspect the matching screen, ViewModel/use case, model, repository, and tests before implementing a feature.
+- Maintain a feature inventory mapping reference features to Expo files and verification status.
+- Port behavior, validation, units, defaults, and edge cases—not only the visual shell.
+- Do not prioritize or assume OKOK support. The architecture must allow multiple scale brands and transports.
 
-## Core Principles
+## Architecture
 
-- **Feature parity:** Use the reference app as the baseline; do not omit major screens or workflows without recording the reason and status.
-- **Protocol-agnostic:** Keep Bluetooth transport, protocol adapters, measurement models, storage, domain logic, and UI separate.
-- **Extensible:** New scale support should generally be added through isolated protocol adapters rather than brand-specific screen logic.
-- **Cross-platform:** Target iOS and Android with Expo where possible. Document features requiring a development build or native module.
-- **Privacy first:** Keep data local by default. Do not add analytics, accounts, cloud sync, or external data transmission without an explicit product decision.
-- **Maintainable and testable:** Use typed domain models, small modules, reusable components, and tests for calculations, parsing, persistence, and critical workflows.
-- **License awareness:** The reference repository is GPL-3.0. Before copying or adapting its source code, review the license and ensure distribution plans comply. UI/behavior reimplementation and direct code reuse must not be treated as the same licensing question.
+- Use Expo + TypeScript and keep UI, domain logic, persistence, localization, Bluetooth transport, and protocol parsing separate.
+- Keep measurements local by default. Do not add accounts, cloud sync, analytics, or external transmission without an explicit decision.
+- Keep protocol adapters isolated behind shared typed interfaces; do not place brand-specific packet parsing in screens.
+- Distinguish scale-reported metrics from derived estimates. Never fabricate missing values.
+- Use `zh-TW` for user-facing date formatting where a fixed locale is appropriate; keep translation strings centralized as localization expands.
+- Prefer Expo-compatible dependencies. If a feature requires native modules or a development build, document that clearly.
+- Handle permission denial, Bluetooth-off states, scan failures, disconnects, malformed packets, and unsupported devices gracefully.
+- The reference project is GPL-3.0. Review obligations before copying/adapting source and before distributing builds.
 
-## Reference Features to Inventory and Port
+## Bluetooth Truthfulness
 
-Inspect `master` and track implementation status for at least the following areas:
+- A scan result means only that a Bluetooth advertisement/device was discovered.
+- Do not describe a scale as supported until its manufacturer data or GATT payload has been parsed and the resulting measurement path verified.
+- Support broadcast/advertisement-based and GATT-connected devices where technically possible.
+- Document iOS/Android differences and require physical-device verification for Bluetooth behavior.
+- Expo Go cannot run arbitrary native BLE modules; use an appropriate custom development build.
 
-1. **Overview and measurements**
-   - Measurement overview/list, measurement detail, adding/editing/deleting measurements, comments, dates, units, and measurement-value handling.
-   - Configurable measurement types and display of the metrics a user cares about.
-   - Goal indicators, evaluation feedback, and differences from previous measurements where supported by the reference.
-2. **Charts and analysis**
-   - Measurement charts, chart filters/layers/settings, selectable time periods, trends, statistics, comparisons, and insights.
-   - Match calculation and aggregation semantics rather than approximating the outputs.
-3. **Users and profiles**
-   - Multiple users, profile editing, relevant personal attributes, goals, and user-specific measurements.
-   - Assisted weighing for babies/pets and support workflows for amputations where present in the reference.
-4. **Bluetooth and scale support**
-   - Device discovery and management, connection status, scale selection, user interaction flows, diagnostics, and protocol capability handling.
-   - Support broadcast-based and GATT-connected scales where technically possible; do not assume all scales share one transport.
-   - Build a protocol registry and normalized measurement output. Add and verify adapters independently; do not make OKOK the initial project gate.
-5. **Data and settings**
-   - Import/export (including CSV where supported), backup/restore behavior, data management, general settings, units, theme, language/localization, chart settings, measurement-type settings, and about/license information.
-   - Review reminder, sync, and background behaviors in the reference and decide how each can be implemented safely and appropriately on iOS/Android.
-6. **Usability and platform adaptation**
-   - Navigation, dialogs, pickers, confirmation flows, empty/loading/error states, accessibility, dark/light themes, and responsive layouts.
-   - Recreate the intent of Android widgets only if an equivalent cross-platform feature is practical; document differences.
+## Keyboard and Form Requirements
 
-## Architecture Expectations
+- Numeric iOS keyboards must provide an obvious dismissal action when the keyboard does not include a Return key.
+- Forms should remain usable while the keyboard is open and allow scrolling to obscured controls.
+- Prefer accessible labels, explicit validation, and recoverable error messages in Traditional Chinese.
 
-- Use Expo + TypeScript.
-- Separate at minimum:
-  - app navigation and screens;
-  - reusable UI components and theme tokens;
-  - domain models and measurement types;
-  - calculation/evaluation/trend logic;
-  - persistence and repositories;
-  - import/export and backup logic;
-  - Bluetooth manager and protocol adapters;
-  - localization and settings.
-- Keep screens independent from Bluetooth library APIs and protocol-specific packet formats.
-- Keep protocol adapters isolated and register them centrally. Unknown devices must be handled gracefully.
-- Normalize measurements with typed units, timestamps, source/device metadata, and explicit availability/provenance for each metric.
-- Distinguish values reported by the scale from values derived by formulas. Do not fabricate unavailable measurements.
-- Avoid assumptions about device names, manufacturer IDs, packet lengths, units, permissions, or metric availability.
-- Choose Expo-compatible dependencies where possible. When native capabilities are needed, document the reason, platform differences, and development-build setup.
+## Porting Workflow
 
-## Workflow for Every Ported Feature
+1. Inspect the master implementation and its models, domain rules, storage, and tests.
+2. Update the feature inventory before implementation.
+3. Implement typed domain logic independently from UI.
+4. Recreate UI and interactions using reusable React Native components.
+5. Add tests for calculations, conversion, validation, persistence, and critical transitions.
+6. Verify on iOS and Android and compare against the reference.
+7. Mark features complete, partial, blocked, or intentionally changed. Never claim unverified features are complete.
 
-1. Inspect the relevant implementation in `master` and identify its UI, domain logic, data model, persistence, settings, and tests.
-2. Record expected behavior and edge cases in the feature inventory.
-3. Implement the TypeScript domain logic separately from the screen wherever possible.
-4. Recreate the UI and interaction flow using reusable React Native components.
-5. Add tests for calculations, conversion rules, validation, and critical state transitions.
-6. Compare the result against the reference behavior and screenshots where available.
-7. Update the inventory and documentation with completed, partial, blocked, or intentionally changed behavior.
+## Acceptance Criteria
 
-Do not port only the visual shell while leaving controls nonfunctional. Likewise, do not implement calculations with placeholder values simply to make a screen look complete.
+- The app starts using documented instructions on physical iOS and Android devices.
+- Main UI and navigation are available in Traditional Chinese.
+- iOS numeric forms have a visible keyboard-dismiss control.
+- Local measurements persist across restarts.
+- Ported calculations match known reference examples and have tests.
+- Bluetooth scanning shows permission, radio state, and scan errors clearly.
+- BLE discovery is not confused with verified scale-protocol support.
+- No sensitive measurement data is sent externally by default.
 
-## Quality and Acceptance Criteria
+## Milestones
 
-- The app launches on physical iOS and Android devices using the documented workflow.
-- Major reference screens and navigation flows are inventoried; every omission or platform-specific change is documented.
-- Unit conversions, derived metrics, trends, evaluations, and aggregation rules have tests against known examples or reference behavior.
-- Measurement data persists locally and survives app restarts.
-- Import/export validates input and handles malformed files without data loss.
-- Bluetooth failures, denied permissions, disconnects, malformed packets, and unsupported devices have clear recovery states.
-- No sensitive measurement data is transmitted externally by default.
-- No feature is described as supported until it has been implemented and verified.
-
-## Initial Milestones
-
-- [ ] M1: Inspect master and create a reference feature inventory, including screen paths and linked domain logic.
-- [ ] M2: Set up the Expo + TypeScript app, navigation, theme, localization foundation, and local persistence.
-- [ ] M3: Port the core data model, measurement types, overview, measurement detail, and add/edit flows.
-- [ ] M4: Port charts, trends, statistics, comparisons, insights, and their calculation logic.
-- [ ] M5: Port users, goals, settings, data management, import/export, and other reference workflows.
-- [ ] M6: Implement the cross-platform Bluetooth foundation and extensible protocol adapter registry.
-- [ ] M7: Port and verify scale protocols in a planned order, with tests and documented device coverage.
-- [ ] M8: Run parity checks on iOS and Android, close gaps, and document known differences and release requirements.
+- [x] Expo + TypeScript foundation and initial local storage.
+- [x] Initial Traditional Chinese UI pass for main tabs and measurement form.
+- [x] BLE discovery screen and native-module configuration added (not yet verified on device).
+- [ ] Inspect master comprehensively and finish the reference feature inventory.
+- [ ] Verify iOS keyboard behavior and run TypeScript/build checks.
+- [ ] Port the reference measurement model, calculation rules, charts, statistics, and settings.
+- [ ] Implement and test scale protocol adapters separately from discovery.
+- [ ] Validate on physical iOS and Android devices and document remaining gaps.
