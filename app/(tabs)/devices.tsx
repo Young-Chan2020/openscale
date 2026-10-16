@@ -11,11 +11,11 @@ async function requestScanPermission() {
   if (Platform.OS !== "android") return true;
   if (Number(Platform.Version) >= 31) {
     const result = await PermissionsAndroid.requestMultiple([
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+      PermissionsAndroid.PERMISSIONS.藍牙搜尋_SCAN,
+      PermissionsAndroid.PERMISSIONS.藍牙搜尋_CONNECT,
     ]);
-    return result[PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN] === PermissionsAndroid.RESULTS.GRANTED
-      && result[PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT] === PermissionsAndroid.RESULTS.GRANTED;
+    return result[PermissionsAndroid.PERMISSIONS.藍牙搜尋_SCAN] === PermissionsAndroid.RESULTS.GRANTED
+      && result[PermissionsAndroid.PERMISSIONS.藍牙搜尋_CONNECT] === PermissionsAndroid.RESULTS.GRANTED;
   }
   const result = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
   return result === PermissionsAndroid.RESULTS.GRANTED;
@@ -89,7 +89,7 @@ export default function DevicesScreen() {
   };
 
   return <Page title="藍牙裝置" subtitle="搜尋附近的體重秤與其他低功耗藍牙裝置。">
-    <Panel title="裝置搜尋" eyebrow="BLUETOOTH">
+    <Panel title="裝置搜尋" eyebrow="藍牙搜尋">
       <View style={s.stateRow}><View style={[s.dot,{backgroundColor:bleState==="藍牙已開啟"?colors.teal:colors.amber}]}/><Text style={s.state}>{bleState}</Text></View>
       <Text style={s.description}>搜尋時請讓體重秤保持開啟，並靠近手機。部分體重秤只有站上秤面或喚醒後才會廣播訊號。</Text>
       <Pressable onPress={() => void startScan()} style={[s.button,scanning&&s.stopButton]}>
@@ -98,7 +98,7 @@ export default function DevicesScreen() {
       </Pressable>
       <Text style={s.status}>{status}</Text>
     </Panel>
-    <Panel title={`搜尋結果（${devices.length}）`} eyebrow="NEARBY DEVICES">
+    <Panel title={`搜尋結果（${devices.length}）`} eyebrow="附近裝置">
       {devices.length===0 ? <View style={s.empty}><Ionicons name="bluetooth-outline" size={30} color={colors.muted}/><Text style={s.emptyTitle}>{scanning?"正在等待裝置回應…":"尚未找到裝置"}</Text><Text style={s.description}>找到的裝置會列在這裡。目前這一步只負責發現藍牙裝置，尚未解析體重秤封包或匯入體重數據。</Text></View> :
       devices.map(device=><View key={device.id} style={s.deviceRow}><View style={s.deviceIcon}><Ionicons name="hardware-chip-outline" size={19} color={colors.primary}/></View><View style={s.deviceInfo}><Text style={s.deviceName}>{device.name||device.localName||"未命名裝置"}</Text><Text selectable style={s.deviceId}>{device.id}</Text><Text style={s.deviceMeta}>{device.rssi==null?"訊號強度未知":`訊號強度：${device.rssi} dBm`}{device.manufacturerData?" · 已收到製造商資料":""}</Text></View></View>)}
     </Panel>
