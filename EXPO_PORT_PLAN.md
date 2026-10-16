@@ -1,33 +1,37 @@
 # Expo Port Plan
 
-The `master` branch is the product and behavior reference. This branch is a cross-platform React Native + Expo port, not an OKOK-only prototype.
+The `master` branch is the product and behavior reference. This is a cross-platform React Native + Expo port, not an OKOK-only prototype.
 
-## Initial implementation
+## Current status
 
 | Area | Status |
 |---|---|
 | Expo Router + TypeScript foundation | Started |
-| Local SQLite schema for users, measurements and metric values | Started |
-| Overview and manual weight entry | Initial pass |
-| Measurement history and delete | Initial pass |
-| Weight trend from saved data | Initial pass |
-| Comparison insight | Initial pass |
-| Profile fields stored locally | Initial pass |
+| Local SQLite schema for users, measurements and metric values | Initial pass |
+| Overview, manual entry, history, charts, insights, profile | Initial pass; not yet at master parity |
+| Main tabs and form copy in Traditional Chinese | Initial translation pass; needs a full language audit |
+| iOS keyboard dismissal accessory | Added to measurement and profile forms; device verification pending |
+| Bluetooth device discovery screen | Implemented using `react-native-ble-plx`; native build and physical-device test pending |
+| Bluetooth scale packet parsing / weight import | Not implemented |
+| Verified scale protocol support | None claimed |
 | Exact derived calculations and unit parity | Not started |
-| Measurement type configuration and typed values | Not started |
 | Full chart/table/statistics/insights parity | Not started |
 | Import/export, backup/restore, goals and reminders | Not started |
-| Bluetooth manager and protocol adapter registry | Not started |
-| Localization, theme parity and platform review | Not started |
+| Full localization framework and language settings | Not started |
+| Physical iOS/Android verification and automated checks | Not run |
 
-## Porting rules
+## Next work
 
-1. Inspect each relevant master screen, ViewModel/use case, model, repository and tests before implementing its Expo counterpart.
-2. Port behavior and calculation semantics, not just the visual shell.
-3. Record each feature as complete, partial, blocked or intentionally changed.
-4. Do not display fabricated measurements or derived metrics when required inputs are missing.
-5. Keep UI independent from BLE libraries and protocol packet formats. OKOK is not a prerequisite for porting the general app.
-6. Keep measurement data local by default.
+1. Inspect each relevant master screen, ViewModel/use case, model, repository, and test.
+2. Build a feature inventory and port actual master behavior rather than extending the current approximate UI.
+3. Audit all user-facing text for Traditional Chinese, including alerts, accessibility labels, date formats, permission prompts, and empty/error states.
+4. Test the iOS keyboard accessory and form layout on a real device.
+5. Build a custom Expo development client to verify BLE scanning and permissions on iOS and Android.
+6. After discovery works, inspect scale advertisements and GATT data and implement protocol adapters one at a time with tests.
+
+## Bluetooth distinction
+
+The current BLE screen is a **device-discovery scaffold**. It can list discovered BLE devices once the native app is built and permissions are granted. It does not yet decode a scale's advertisement/GATT payload, determine a verified brand protocol, or import weight readings. Expo Go does not include this native BLE module.
 
 ## Run locally
 
@@ -36,7 +40,7 @@ npm install
 npx expo start
 ```
 
-BLE may require a development build/native module and is a separate workstream from the initial UI/domain port.
+For Bluetooth testing, create and install an appropriate custom development build; a normal Expo Go session is insufficient.
 
 ## Licensing
 
