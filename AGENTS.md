@@ -31,6 +31,15 @@ Rebuild openScale as a cross-platform React Native + Expo app, using `master` as
 - Handle permission denial, Bluetooth-off states, scan failures, disconnects, malformed packets, and unsupported devices gracefully.
 - The reference project is GPL-3.0. Review obligations before copying/adapting source and before distributing builds.
 
+## Platform Build Strategy
+
+Keep platform build workflows separate:
+
+- **iOS:** local build on macOS with Xcode and the user's free Apple ID / Personal Team. Do not make EAS iOS builds a requirement. Document the temporary provisioning limit (typically 7 days) and signing setup. Use `npm run ios:device` for local device builds.
+- **Android:** use EAS cloud builds for APK distribution. The `preview` profile should produce an installable APK via `eas build --platform android --profile preview`.
+- **BLE:** never direct the user to test `react-native-ble-plx` in Expo Go or a simulator. Verify on a physical device using a native build.
+- Keep `eas.json`, package scripts, and `EXPO_PORT_PLAN.md` aligned when build workflows change.
+
 ## Bluetooth Truthfulness
 
 - A scan result means only that a Bluetooth advertisement/device was discovered.
