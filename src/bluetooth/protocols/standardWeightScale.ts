@@ -5,7 +5,8 @@ export const WEIGHT_MEASUREMENT_CHARACTERISTIC_UUID = "00002a9d-0000-1000-8000-0
 
 function normalizeUuid(value: string) {
   const uuid = value.toLowerCase().replace(/[^a-f0-9]/g, "");
-  return uuid.length === 4 ? `0000${uuid}00001000800000805f9b34fb` : uuid;
+  const shortUuid = uuid.length <= 8 ? uuid.slice(-4) : uuid;
+  return shortUuid.length === 4 ? `0000${shortUuid}00001000800000805f9b34fb` : uuid;
 }
 
 export const standardWeightScaleAdapter: ScaleProtocolAdapter = {
@@ -53,6 +54,7 @@ export function decodeBase64(value: string): Uint8Array {
     if (bits >= 8) {
       bits -= 8;
       output.push((buffer >> bits) & 0xff);
+      buffer &= (1 << bits) - 1;
     }
   }
   return Uint8Array.from(output);
