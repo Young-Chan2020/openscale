@@ -18,7 +18,8 @@
           ],
           "bluetoothAlwaysPermission": "允許 openScale 使用藍牙搜尋體重秤"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
@@ -32,7 +33,6 @@
       }
     },
     "android": {
-      "edgeToEdgeEnabled": true,
       "permissions": [
         "BLUETOOTH_SCAN",
         "BLUETOOTH_CONNECT",
