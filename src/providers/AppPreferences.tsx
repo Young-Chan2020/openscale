@@ -57,7 +57,7 @@ export function AppPreferencesProvider({ children }: { children: React.ReactNode
     setLanguage, setThemePreference, t: (key) => translate(language, key),
   }), [language, themePreference, resolvedTheme, setLanguage, setThemePreference]);
 
-  useEffect(() => { Appearance.setColorScheme(themePreference === "system" ? "unspecified" : themePreference); }, [themePreference]);
+  useEffect(() => { Appearance.setColorScheme(themePreference === "system" ? null : themePreference); }, [themePreference]);
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
