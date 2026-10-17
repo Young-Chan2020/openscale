@@ -1,0 +1,32 @@
+# Existing Android build outputs
+*.apk
+*.ap_
+*.abb
+*.dex
+*.class
+.gradle/
+.idea/
+build/
+local.properties
+*.jks
+google-services.json
+*.log
+.kotlin/
+Gemfile.lock
+
+# Expo / React Native
+node_modules/
+.expo/
+dist/
+web-build/
+expo-env.d.ts.tmp
+*.tsbuildinfo
+.DS_Store
+.env
+.env.*
+
+# Ensure the EAS custom build workflow is included in the upload archive.
+!.eas/
+!.eas/build/
+!.eas/build/ios-unsigned.yml
+
