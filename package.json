@@ -8,6 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "ios:device": "expo run:ios --device",
+    "android:local-apk": "expo prebuild --platform android && cd android && ./gradlew assembleDebug",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
