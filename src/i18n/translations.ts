@@ -39,7 +39,7 @@ const translations = {
     readFailed:"讀取失敗", saveFailed:"無法儲存測量結果", tryAgainMessage:"請稍後再試。",
     back:"返回", close:"關閉", deleteMeasurement:"刪除測量", bmiDescription:"BMI 以體重與身高計算，未考慮肌肉量、年齡等個體差異。",
     weightUnit:"kg", noData:"暫無資料", period:"期間", current:"目前", previous:"上次",
-    "lang.zh-Hant":"繁體中文", "lang.zh-Hans":"简体中文", "lang.en":"英文"
+    "lang.zh-Hant":"繁體中文", "lang.zh-Hans":"簡體中文", "lang.en":"英文"
   },
   "zh-Hans": {
     appName:"openScale", overview:"总览", charts:"图表", records:"记录", analysis:"分析", settings:"设置",
@@ -118,7 +118,7 @@ const translations = {
     readFailed:"Could not read measurement", saveFailed:"Could not save measurement", tryAgainMessage:"Please try again.",
     back:"Back", close:"Close", deleteMeasurement:"Delete measurement", bmiDescription:"BMI uses height and weight and does not account for muscle mass, age, or individual differences.",
     weightUnit:"kg", noData:"No data yet", period:"Period", current:"Current", previous:"Previous",
-    "lang.zh-Hant":"繁體中文", "lang.zh-Hans":"简体中文", "lang.en":"English"
+    "lang.zh-Hant":"繁體中文", "lang.zh-Hans":"简体中文", "lang.en":"英语"
   }
 } as const;
 
