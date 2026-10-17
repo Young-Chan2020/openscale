@@ -9,6 +9,7 @@ export default function RootLayout() {
     <StatusBar style="dark" />
     <Stack screenOptions={{ headerShown:false, contentStyle:{backgroundColor:colors.canvas} }}>
       <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="measurement/auto" />
       <Stack.Screen name="measurement/new" options={{presentation:"modal",headerShown:true,title:"新增測量",headerTintColor:colors.ink,headerStyle:{backgroundColor:colors.canvas}}} />
     </Stack>
   </SQLiteProvider>;
