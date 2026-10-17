@@ -12,4 +12,15 @@ build:
         command: pod install
     - eas/generate_gymfile_from_template
     - eas/run_fastlane
+    - run:
+        name: Diagnose iOS build outputs
+        command: |
+          echo "=== IPA files ==="
+          find ios -type f -name '*.ipa' -print || true
+          echo "=== XCARCHIVE directories ==="
+          find ios -type d -name '*.xcarchive' -print || true
+          echo "=== APP bundles ==="
+          find ios -type d -name '*.app' -print | head -100 || true
+          echo "=== Build directories ==="
+          find ios -maxdepth 4 -type d \( -name build -o -name Products -o -name Archives \) -print || true
     - eas/find_and_upload_build_artifacts
