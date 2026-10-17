@@ -24,7 +24,9 @@
     },
     "ios-unsigned": {
       "withoutCredentials": true,
-      "config": "ios-unsigned.yml"
+      "ios": {
+        "config": "ios-unsigned.yml"
+      }
     }
   }
 }
