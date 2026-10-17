@@ -11,7 +11,7 @@ build:
         working_directory: ios
         command: pod install
     - run:
-        name: Archive for physical iOS devices without code signing
+        name: Build for physical iOS devices without code signing
         command: |
           set -euo pipefail
 
@@ -29,9 +29,9 @@ build:
           fi
           echo "Using scheme: $SCHEME"
 
-          ARCHIVE_PATH="$PWD/ios/build/UnsignedDevice.xcarchive"
-          mkdir -p "$PWD/ios/build"
-          rm -rf "$ARCHIVE_PATH"
+          DERIVED_DATA="$PWD/ios/build"
+          rm -rf "$DERIVED_DATA/Build" "$DERIVED_DATA/Info.plist"
+          mkdir -p "$DERIVED_DATA"
 
           xcodebuild \
             -workspace "$WORKSPACE" \
@@ -39,14 +39,14 @@ build:
             -configuration Release \
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
-            -archivePath "$ARCHIVE_PATH" \
+            -derivedDataPath "$DERIVED_DATA" \
             CODE_SIGNING_ALLOWED=NO \
-            archive
+            build
 
-          APP_PATH="$(find "$ARCHIVE_PATH/Products/Applications" -maxdepth 1 -type d -name '*.app' -print -quit)"
+          APP_PATH="$(find "$DERIVED_DATA/Build/Products/Release-iphoneos" -maxdepth 1 -type d -name '*.app' -print -quit)"
           if [ -z "$APP_PATH" ]; then
-            echo "ERROR: Archive completed but no .app was found in Products/Applications"
-            find "$ARCHIVE_PATH" -maxdepth 5 -print
+            echo "ERROR: Device build completed but no app was found under Release-iphoneos"
+            find "$DERIVED_DATA/Build/Products" -maxdepth 3 -print || true
             exit 1
           fi
 
@@ -63,8 +63,6 @@ build:
         command: |
           echo "=== IPA files ==="
           find ios -type f -name '*.ipa' -print || true
-          echo "=== XCARCHIVE directories ==="
-          find ios -type d -name '*.xcarchive' -print || true
           echo "=== APP bundles ==="
           find ios -type d -name '*.app' -print | head -100 || true
     - eas/find_and_upload_build_artifacts
