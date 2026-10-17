@@ -7,6 +7,7 @@ export async function initDatabase(db:SQLiteDatabase){
  CREATE TABLE IF NOT EXISTS measurements(id INTEGER PRIMARY KEY AUTOINCREMENT,user_id INTEGER NOT NULL DEFAULT 1,timestamp INTEGER NOT NULL,weight_kg REAL,note TEXT,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,UNIQUE(user_id,timestamp));
  CREATE INDEX IF NOT EXISTS idx_measurements_user_timestamp ON measurements(user_id,timestamp DESC);
  CREATE TABLE IF NOT EXISTS measurement_values(id INTEGER PRIMARY KEY AUTOINCREMENT,measurement_id INTEGER NOT NULL,metric_key TEXT NOT NULL,numeric_value REAL,text_value TEXT,unit TEXT NOT NULL DEFAULT '',source TEXT NOT NULL DEFAULT 'manual',FOREIGN KEY(measurement_id) REFERENCES measurements(id) ON DELETE CASCADE);
+ CREATE TABLE IF NOT EXISTS app_settings(key TEXT PRIMARY KEY NOT NULL,value TEXT NOT NULL);
  INSERT OR IGNORE INTO users(id,name,created_at) VALUES(1,'Me',strftime('%s','now')*1000);`);
 }
 export async function listMeasurements(db:SQLiteDatabase,userId=1):Promise<Measurement[]>{
