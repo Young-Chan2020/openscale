@@ -13,7 +13,7 @@ export default function InsightsScreen(){
  const db=useSQLiteContext();const {colors,t}=useAppPreferences();const [items,setItems]=useState<Measurement[]>([]);const [profile,setProfile]=useState<{height_cm:number|null;birth_year:number|null;sex:"female"|"male"|"unspecified"}|null>(null);
  const load=useCallback(async()=>{const [measurements,p]=await Promise.all([listMeasurements(db),getUserProfile(db)]);setItems(measurements);setProfile(p?{height_cm:p.height_cm,birth_year:p.birth_year,sex:p.sex}:null);},[db]);useFocusEffect(useCallback(()=>{void load();},[load]));
  const a=items[0],b=items[1],delta=useMemo(()=>a?.weightKg!=null&&b?.weightKg!=null?calculateWeightDifference(a.weightKg,b.weightKg):null,[a?.weightKg,b?.weightKg]);
- const bmi=a?.weightKg!=null&&profile?.height_cm!=null?calculateBmi(a.weightKg,profile.height_cm):null;
+ const scaleBmi=a?findMetric(a.values,["bmi","bodymassindex"]):undefined;\n const bmi=a?.weightKg!=null&&profile?.height_cm!=null?calculateBmi(a.weightKg,profile.height_cm):(scaleBmi&&typeof scaleBmi.value==="number"?scaleBmi.value:null);
  const age=profile?.birth_year?new Date().getFullYear()-profile.birth_year:null;
  const bmr=a?.weightKg!=null&&profile?.height_cm!=null&&age!=null&&age>=18&&age<=120&&profile.sex!=="unspecified"?Math.round(10*a.weightKg+6.25*profile.height_cm-5*age+(profile.sex==="male"?5:-161)):null;
  const bodyFat=a?findMetric(a.values,["bodyfat","bodyfatpercentage","fatpercentage","fatpercent"]):undefined;
