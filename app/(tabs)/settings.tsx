@@ -1,5 +1,6 @@
 import {useCallback,useState} from "react";
-import {useFocusEffect,useSQLiteContext} from "expo-router";
+import {useFocusEffect} from "expo-router";
+import {useSQLiteContext} from "expo-sqlite";
 import {Alert,InputAccessoryView,Keyboard,Pressable,StyleSheet,Text,TextInput,View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {Page,Panel} from "@/components/Page";
