@@ -30,7 +30,8 @@
         "CFBundleDevelopmentRegion": "zh-Hant",
         "NSBluetoothAlwaysUsageDescription": "openScale 需要使用藍牙搜尋附近的體重秤。",
         "NSBluetoothPeripheralUsageDescription": "openScale 需要使用藍牙搜尋附近的體重秤。"
-      }
+      },
+      "bundleIdentifier": "com.chanchungyeung949.openscaleexpo"
     },
     "android": {
       "permissions": [
