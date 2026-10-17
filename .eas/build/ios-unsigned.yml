@@ -1,68 +1,8 @@
 build:
-  name: Build unsigned iOS device IPA
+  name: Build unsigned iOS device IPA with the standard EAS pipeline
   steps:
-    - eas/checkout
-    - eas/use_npm_token
-    - eas/install_node_modules
-    - eas/resolve_build_config
-    - eas/prebuild
-    - run:
-        name: Install CocoaPods
-        working_directory: ios
-        command: pod install
-    - run:
-        name: Build for physical iOS devices without code signing
-        command: |
-          set -euo pipefail
-
-          WORKSPACE="$(find ios -maxdepth 2 -name '*.xcworkspace' -not -path '*/Pods/*' -print -quit)"
-          if [ -z "$WORKSPACE" ]; then
-            echo "ERROR: Could not find an iOS workspace under ios/"
-            exit 1
-          fi
-          echo "Using workspace: $WORKSPACE"
-
-          SCHEME="$(xcodebuild -list -json -workspace "$WORKSPACE" | /usr/bin/python3 -c 'import json,sys; d=json.load(sys.stdin); print((d.get("workspace") or {}).get("schemes", [""])[0])')"
-          if [ -z "$SCHEME" ]; then
-            echo "ERROR: Could not determine an Xcode scheme"
-            exit 1
-          fi
-          echo "Using scheme: $SCHEME"
-
-          DERIVED_DATA="$PWD/ios/build"
-          rm -rf "$DERIVED_DATA/Build" "$DERIVED_DATA/Info.plist"
-          mkdir -p "$DERIVED_DATA"
-
-          xcodebuild \
-            -workspace "$WORKSPACE" \
-            -scheme "$SCHEME" \
-            -configuration Release \
-            -sdk iphoneos \
-            -destination 'generic/platform=iOS' \
-            -derivedDataPath "$DERIVED_DATA" \
-            CODE_SIGNING_ALLOWED=NO \
-            build
-
-          APP_PATH="$(find "$DERIVED_DATA/Build/Products/Release-iphoneos" -maxdepth 1 -type d -name '*.app' -print -quit)"
-          if [ -z "$APP_PATH" ]; then
-            echo "ERROR: Device build completed but no app was found under Release-iphoneos"
-            find "$DERIVED_DATA/Build/Products" -maxdepth 3 -print || true
-            exit 1
-          fi
-
-          PACKAGE_ROOT="$PWD/ios/build/unsigned-ipa"
-          IPA_PATH="$PWD/ios/build/UnsignedDevice.ipa"
-          rm -rf "$PACKAGE_ROOT" "$IPA_PATH"
-          mkdir -p "$PACKAGE_ROOT/Payload"
-          ditto "$APP_PATH" "$PACKAGE_ROOT/Payload/$(basename "$APP_PATH")"
-          (cd "$PACKAGE_ROOT" && /usr/bin/zip -qry "$IPA_PATH" Payload)
-          echo "Created unsigned device IPA: $IPA_PATH"
-          /usr/bin/unzip -l "$IPA_PATH" | head -30
-    - run:
-        name: Diagnose iOS device build outputs
-        command: |
-          echo "=== IPA files ==="
-          find ios -type f -name '*.ipa' -print || true
-          echo "=== APP bundles ==="
-          find ios -type d -name '*.app' -print | head -100 || true
-    - eas/find_and_upload_build_artifacts
+    # Let EAS run its supported iOS build pipeline (Pods, Gymfile, Fastlane,
+    # and artifact discovery). Do not invoke xcodebuild manually: the previous
+    # custom command compiled ExpoModulesProvider before Expo module maps were
+    # available in the derived-data products directory.
+    - eas/build
