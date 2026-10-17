@@ -80,7 +80,7 @@ Keep platform build workflows separate:
 - [x] Expo + TypeScript foundation and initial local storage.
 - [x] Initial Traditional Chinese UI pass for main tabs and measurement form.
 - [x] BLE discovery screen and native-module configuration added (not yet verified on device).
-- [x] Initial one-tap weigh-in screen and Bluetooth SIG Weight Scale Service GATT adapter added (hardware verification pending).
+- [x] Initial one-tap weigh-in screen, Bluetooth SIG Weight Scale Service GATT adapter, and partial OKOK/Chipsea broadcast parser added (hardware verification pending).
 - [ ] Inspect master comprehensively and finish the reference feature inventory.
 - [ ] Verify iOS keyboard behavior and run TypeScript/build checks.
 - [ ] Port the reference measurement model, calculation rules, charts, statistics, and settings.
