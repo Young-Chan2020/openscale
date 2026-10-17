@@ -39,6 +39,7 @@ const translations = {
     readFailed:"讀取失敗", saveFailed:"無法儲存測量結果", tryAgainMessage:"請稍後再試。",
     back:"返回", close:"關閉", deleteMeasurement:"刪除測量", bmiDescription:"BMI 以體重與身高計算，未考慮肌肉量、年齡等個體差異。",
     weightUnit:"kg", noData:"暫無資料", period:"期間", current:"目前", previous:"上次",
+    bmr:"基礎代謝率（BMR）", bmrNeedProfile:"填寫身高、出生年份和生理性別後，即可估算基礎代謝率。", bodyFat:"體脂率", muscleMass:"肌肉量", visceralFat:"內臟脂肪", notProvidedByScale:"體重秤尚未提供此數據。", diagnosticLog:"測量診斷記錄", diagnosticHint:"此內容包含附近裝置廣播與測量封包。", noDiagnosticData:"尚未收到診斷資料。",
     "lang.zh-Hant":"繁體中文", "lang.zh-Hans":"簡體中文", "lang.en":"英文"
   },
   "zh-Hans": {
@@ -78,6 +79,7 @@ const translations = {
     readFailed:"读取失败", saveFailed:"无法保存测量结果", tryAgainMessage:"请稍后再试。",
     back:"返回", close:"关闭", deleteMeasurement:"删除测量", bmiDescription:"BMI 根据体重与身高计算，未考虑肌肉量、年龄等个体差异。",
     weightUnit:"kg", noData:"暂无数据", period:"期间", current:"目前", previous:"上次",
+    bmr:"基础代谢率（BMR）", bmrNeedProfile:"填写身高、出生年份和生理性别后，即可估算基础代谢率。", bodyFat:"体脂率", muscleMass:"肌肉量", visceralFat:"内脏脂肪", notProvidedByScale:"体重秤尚未提供此数据。", diagnosticLog:"测量诊断日志", diagnosticHint:"此内容包含附近设备广播与测量数据包。", noDiagnosticData:"尚未收到诊断数据。",
     "lang.zh-Hant":"繁体中文", "lang.zh-Hans":"简体中文", "lang.en":"英语"
   },
   en: {
@@ -118,6 +120,7 @@ const translations = {
     readFailed:"Could not read measurement", saveFailed:"Could not save measurement", tryAgainMessage:"Please try again.",
     back:"Back", close:"Close", deleteMeasurement:"Delete measurement", bmiDescription:"BMI uses height and weight and does not account for muscle mass, age, or individual differences.",
     weightUnit:"kg", noData:"No data yet", period:"Period", current:"Current", previous:"Previous",
+    bmr:"Basal metabolic rate (BMR)", bmrNeedProfile:"Add your height, birth year, and sex to estimate basal metabolic rate.", bodyFat:"Body fat", muscleMass:"Muscle mass", visceralFat:"Visceral fat", notProvidedByScale:"This value has not been provided by your scale.", diagnosticLog:"Measurement diagnostics", diagnosticHint:"This log contains nearby device broadcasts and measurement packets.", noDiagnosticData:"No diagnostic data received yet.",
     "lang.zh-Hant":"Traditional Chinese", "lang.zh-Hans":"Simplified Chinese", "lang.en":"English"
   }
 } as const;
