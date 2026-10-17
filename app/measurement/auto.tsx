@@ -51,8 +51,21 @@ export default function AutoMeasurementScreen(){
      if(!chars.some(c=>c.uuid.toLowerCase()===WEIGHT_MEASUREMENT_CHARACTERISTIC_UUID&&c.isNotifiable)){fail(t("readFailed"));return;}
      setSession("waiting");setMessage(t("pleaseStepOn"));
      monitorRef.current=discovered.monitorCharacteristicForService(WEIGHT_SCALE_SERVICE_UUID,WEIGHT_MEASUREMENT_CHARACTERISTIC_UUID,async(monitorError,characteristic)=>{
-      if(!activeRef.current||savedRef.current)return;if(monitorError){fail(t("readFailed"));return;}const parsed=characteristic?.value?parseWeightMeasurementBase64(characteristic.value):null;if(parsed==null)return;
-      savedRef.current=true;try{await addMeasurement(db,{weightKg:parsed,timestamp:Date.now(),note:null});if(!activeRef.current)return;setWeight(parsed);setSession("success");setMessage(t("savedReading"));await cleanup();}catch{savedRef.current=false;fail(t("saveFailed"));}
+       if(!activeRef.current||savedRef.current)return;
+       if(monitorError){appendLog("測量通知錯誤",{message:monitorError.message,errorCode:monitorError.errorCode});fail(t("readFailed"));return;}
+       if(!characteristic?.value)return;
+       const packet=parseWeightMeasurementDetailsBase64(characteristic.value);
+       appendLog("收到測量通知",{characteristicUUID:characteristic.uuid,base64:characteristic.value,parsed:packet});
+       const parsed=packet?.weightKg??null;if(parsed==null)return;
+       savedRef.current=true;
+       try{
+        const values=packet?[
+         ...(packet.bmi==null?[]:[{key:"bmi",value:packet.bmi,unit:"kg/m²",source:"scale" as const}]),
+         ...(packet.heightCm==null?[]:[{key:"height",value:packet.heightCm,unit:"cm",source:"scale" as const}])
+        ]:[];
+        await addMeasurement(db,{weightKg:parsed,timestamp:Date.now(),note:null,values});
+        if(!activeRef.current)return;setWeight(parsed);setSession("success");setMessage(t("savedReading"));await cleanup();
+       }catch{savedRef.current=false;fail(t("saveFailed"));}
      });
     }catch{fail(t("scaleNotFound"));}
    });
