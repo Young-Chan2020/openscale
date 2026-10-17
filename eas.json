@@ -21,12 +21,6 @@
       "android": {
         "buildType": "app-bundle"
       }
-    },
-    "ios-unsigned": {
-      "withoutCredentials": true,
-      "ios": {
-        "config": "ios-unsigned.yml"
-      }
     }
   }
 }
