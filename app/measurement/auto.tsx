@@ -119,7 +119,7 @@ export default function AutoMeasurementScreen() {
       setMessage("正在尋找支援標準體重秤服務的裝置…");
       timeoutRef.current = setTimeout(() => {
         if (!activeRef.current) return;
-        fail("暫時找不到相容的體重秤", "請確認體重秤已喚醒並靠近手機。第一階段只會自動連接廣播 Bluetooth SIG 標準體重秤服務的裝置；其他品牌協定會在後續逐步加入。");
+        fail("暫時找不到相容的體重秤", "請確認體重秤已喚醒並靠近手機。目前已支援初步 OKOK／Chipsea 廣播格式及 Bluetooth SIG 標準體重秤服務；其他品牌協定會在後續逐步加入。");
       }, 45000);
 
       manager.startDeviceScan(null, { allowDuplicates: true }, async (scanError: BleError | null, device: Device | null) => {
@@ -274,7 +274,7 @@ export default function AutoMeasurementScreen() {
         <Ionicons name="information-circle-outline" size={19} color={colors.primary} />
         <View style={s.infoCopy}>
           <Text style={s.infoTitle}>目前的協定支援範圍</Text>
-          <Text style={s.infoText}>第一階段實作 Bluetooth SIG 標準 Weight Scale Service。很多體脂秤使用廠商自訂廣播或 GATT 協定；若你的體重秤不出現，App 不會假裝讀到了數據，我們會再根據原版 openScale 的協定逐步擴充。</Text>
+          <Text style={s.infoText}>目前已實作 Bluetooth SIG 標準 Weight Scale Service，以及原版 openScale 中部分 OKOK／Chipsea 廣播格式的體重解析。很多體脂秤仍使用其他廠商自訂廣播或 GATT 協定；若你的體重秤不相容，App 不會假裝讀到了數據，我們會再逐步擴充。</Text>
         </View>
       </View>
     </View>
