@@ -38,7 +38,7 @@ export function parseWeightMeasurementBase64(value: string): number | null {
   }
 }
 
-function decodeBase64(value: string): Uint8Array {
+export function decodeBase64(value: string): Uint8Array {
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   const clean = value.replace(/[^A-Za-z0-9+/=]/g, "");
   const output: number[] = [];
