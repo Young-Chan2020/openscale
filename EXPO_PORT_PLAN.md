@@ -12,8 +12,8 @@ The `master` branch is the product and behavior reference. This is a cross-platf
 | Main tabs and form copy in Traditional Chinese | Initial translation pass; needs a full language audit |
 | iOS keyboard dismissal accessory | Added to measurement and profile forms; device verification pending |
 | Bluetooth device discovery screen | Implemented using `react-native-ble-plx`; native build and physical-device test pending |
-| Bluetooth SIG standard Weight Scale Service parser + local weight import | Implemented in initial pass; requires physical-device verification |
-| Verified scale protocol support | Standard Weight Scale Service adapter implemented; not yet verified on physical hardware |
+| Bluetooth SIG Weight Scale Service + initial OKOK/Chipsea broadcast weight import | Implemented in initial pass; requires physical-device verification |
+| Verified scale protocol support | Standard GATT and initial OKOK/Chipsea broadcast parsers implemented; not yet verified on physical hardware |
 | Exact derived calculations and unit parity | Not started |
 | Full chart/table/statistics/insights parity | Not started |
 | Import/export, backup/restore, goals and reminders | Not started |
