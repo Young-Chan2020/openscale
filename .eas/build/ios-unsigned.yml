@@ -1,8 +1,0 @@
-build:
-  name: Build unsigned iOS device IPA with the standard EAS pipeline
-  steps:
-    # Let EAS run its supported iOS build pipeline (Pods, Gymfile, Fastlane,
-    # and artifact discovery). Do not invoke xcodebuild manually: the previous
-    # custom command compiled ExpoModulesProvider before Expo module maps were
-    # available in the derived-data products directory.
-    - eas/build
