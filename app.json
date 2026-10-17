@@ -8,7 +8,6 @@
     "userInterfaceStyle": "automatic",
     "plugins": [
       "expo-router",
-      "expo-sqlite",
       [
         "react-native-ble-plx",
         {
