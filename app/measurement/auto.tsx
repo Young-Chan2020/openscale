@@ -13,6 +13,7 @@ import {
   parseWeightMeasurementBase64,
   standardWeightScaleAdapter,
 } from "@/bluetooth/protocols/standardWeightScale";
+import { parseOkOkBroadcast } from "@/bluetooth/protocols/okokBroadcast";
 import { colors, radii, spacing } from "@/theme";
 
 type SessionState = "ready" | "scanning" | "connecting" | "waiting" | "success" | "error";
@@ -121,13 +122,45 @@ export default function AutoMeasurementScreen() {
         fail("暫時找不到相容的體重秤", "請確認體重秤已喚醒並靠近手機。第一階段只會自動連接廣播 Bluetooth SIG 標準體重秤服務的裝置；其他品牌協定會在後續逐步加入。");
       }, 45000);
 
-      manager.startDeviceScan(null, { allowDuplicates: false }, async (scanError: BleError | null, device: Device | null) => {
+      manager.startDeviceScan(null, { allowDuplicates: true }, async (scanError: BleError | null, device: Device | null) => {
         if (!activeRef.current) return;
         if (scanError) {
           fail("藍牙搜尋失敗", scanError.message);
           return;
         }
-        if (!device || candidateHandledRef.current || !standardWeightScaleAdapter.matchesAdvertisement({
+        if (!device || candidateHandledRef.current) return;
+
+        // Some scales (including supported OKOK/Chipsea variants) broadcast
+        // the final reading and never accept a GATT connection.
+        const broadcast = device.manufacturerData
+          ? parseOkOkBroadcast(device.manufacturerData, device.name, device.localName)
+          : null;
+        if (broadcast) {
+          candidateHandledRef.current = true;
+          manager.stopDeviceScan();
+          setSession("waiting");
+          setDeviceName(device.name || device.localName || broadcast.displayName);
+          setMessage("已收到體重秤的完成廣播，正在儲存測量結果…");
+          savedRef.current = true;
+          try {
+            await addMeasurement(db, {
+              weightKg: broadcast.weightKg,
+              timestamp: Date.now(),
+              note: `Bluetooth broadcast: ${broadcast.displayName}`,
+            });
+            if (!activeRef.current) return;
+            setWeight(broadcast.weightKg);
+            setSession("success");
+            setMessage(`已透過 ${broadcast.displayName} 廣播讀取並儲存體重。`);
+            await cleanup();
+          } catch (saveError) {
+            savedRef.current = false;
+            fail("無法儲存測量結果", saveError instanceof Error ? saveError.message : "請稍後重試。");
+          }
+          return;
+        }
+
+        if (!standardWeightScaleAdapter.matchesAdvertisement({
           serviceUUIDs: device.serviceUUIDs ?? [],
           manufacturerData: device.manufacturerData,
           name: device.name,
