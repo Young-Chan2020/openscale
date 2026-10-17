@@ -9,8 +9,8 @@ Rebuild openScale as a cross-platform React Native + Expo app, using `master` as
 1. Keep every user-facing screen and message in Traditional Chinese (zh-TW) unless the user explicitly requests another language.
 2. Fix platform usability issues, especially iOS keyboard dismissal, safe-area behavior, and form scrolling.
 3. Port the reference app's existing screens and business logic accurately.
-4. Build general Bluetooth device discovery and diagnostics without claiming that discovery alone means weight data can be read.
-5. Add scale protocol adapters only after inspecting their packet formats and verifying them on real hardware or reliable captures.
+4. Deliver a one-tap weigh-in session that handles permissions, scanning, connection, notifications, timeouts, cancellation and local persistence.
+5. Expand the protocol adapter registry using the reference branch's broadcast and GATT handlers; never claim a protocol is hardware-verified until tested on real devices.
 
 ## Source of Truth and Porting Approach
 
@@ -80,8 +80,9 @@ Keep platform build workflows separate:
 - [x] Expo + TypeScript foundation and initial local storage.
 - [x] Initial Traditional Chinese UI pass for main tabs and measurement form.
 - [x] BLE discovery screen and native-module configuration added (not yet verified on device).
+- [x] Initial one-tap weigh-in screen and Bluetooth SIG Weight Scale Service GATT adapter added (hardware verification pending).
 - [ ] Inspect master comprehensively and finish the reference feature inventory.
 - [ ] Verify iOS keyboard behavior and run TypeScript/build checks.
 - [ ] Port the reference measurement model, calculation rules, charts, statistics, and settings.
-- [ ] Implement and test scale protocol adapters separately from discovery.
+- [ ] Port broadcast-only and vendor-specific GATT adapters from the reference implementation, with parser tests.
 - [ ] Validate on physical iOS and Android devices and document remaining gaps.
