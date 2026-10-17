@@ -49,7 +49,7 @@ export function parseWeightMeasurementDetailsBase64(value: string): WeightMeasur
       offset += 7;
     }
     if ((flags & 0x04) !== 0 && binary.length >= offset + 1) userId = binary[offset++];
-    if ((flags & 0x08) !== 0 && binary.length >= offset + 3) {
+    if ((flags & 0x08) !== 0 && binary.length >= offset + 4) {
       const rawBmi = binary[offset] | (binary[offset + 1] << 8);
       const rawHeight = binary[offset + 2] | (binary[offset + 3] << 8);
       if (binary.length >= offset + 4) {
