@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "openScale",
+    "name": "秤",
     "slug": "openscale-expo",
     "scheme": "openscale",
     "version": "0.1.0",
@@ -52,6 +52,7 @@
       "eas": {
         "projectId": "706db088-8067-4e7c-83c7-2f587a48410d"
       }
-    }
+    },
+    "icon": "./assets/logo_light.png"
   }
 }
