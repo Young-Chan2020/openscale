@@ -1,5 +1,5 @@
 build:
-  name: iOS device build without signing credentials (experiment)
+  name: Build unsigned iOS device IPA
   steps:
     - eas/checkout
     - eas/use_npm_token
@@ -10,10 +10,56 @@ build:
         name: Install CocoaPods
         working_directory: ios
         command: pod install
-    - eas/generate_gymfile_from_template
-    - eas/run_fastlane
     - run:
-        name: Diagnose iOS build outputs
+        name: Archive for physical iOS devices without code signing
+        command: |
+          set -euo pipefail
+
+          WORKSPACE="$(find ios -maxdepth 2 -name '*.xcworkspace' -not -path '*/Pods/*' -print -quit)"
+          if [ -z "$WORKSPACE" ]; then
+            echo "ERROR: Could not find an iOS workspace under ios/"
+            exit 1
+          fi
+          echo "Using workspace: $WORKSPACE"
+
+          SCHEME="$(xcodebuild -list -json -workspace "$WORKSPACE" | /usr/bin/python3 -c 'import json,sys; d=json.load(sys.stdin); print((d.get("workspace") or {}).get("schemes", [""])[0])')"
+          if [ -z "$SCHEME" ]; then
+            echo "ERROR: Could not determine an Xcode scheme"
+            exit 1
+          fi
+          echo "Using scheme: $SCHEME"
+
+          ARCHIVE_PATH="$PWD/ios/build/UnsignedDevice.xcarchive"
+          mkdir -p "$PWD/ios/build"
+          rm -rf "$ARCHIVE_PATH"
+
+          xcodebuild \
+            -workspace "$WORKSPACE" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$ARCHIVE_PATH" \
+            CODE_SIGNING_ALLOWED=NO \
+            archive
+
+          APP_PATH="$(find "$ARCHIVE_PATH/Products/Applications" -maxdepth 1 -type d -name '*.app' -print -quit)"
+          if [ -z "$APP_PATH" ]; then
+            echo "ERROR: Archive completed but no .app was found in Products/Applications"
+            find "$ARCHIVE_PATH" -maxdepth 5 -print
+            exit 1
+          fi
+
+          PACKAGE_ROOT="$PWD/ios/build/unsigned-ipa"
+          IPA_PATH="$PWD/ios/build/UnsignedDevice.ipa"
+          rm -rf "$PACKAGE_ROOT" "$IPA_PATH"
+          mkdir -p "$PACKAGE_ROOT/Payload"
+          ditto "$APP_PATH" "$PACKAGE_ROOT/Payload/$(basename "$APP_PATH")"
+          /usr/bin/zip -qry "$IPA_PATH" Payload
+          echo "Created unsigned device IPA: $IPA_PATH"
+          /usr/bin/unzip -l "$IPA_PATH" | head -30
+    - run:
+        name: Diagnose iOS device build outputs
         command: |
           echo "=== IPA files ==="
           find ios -type f -name '*.ipa' -print || true
@@ -21,6 +67,4 @@ build:
           find ios -type d -name '*.xcarchive' -print || true
           echo "=== APP bundles ==="
           find ios -type d -name '*.app' -print | head -100 || true
-          echo "=== Build directories ==="
-          find ios -maxdepth 4 -type d \( -name build -o -name Products -o -name Archives \) -print || true
     - eas/find_and_upload_build_artifacts
