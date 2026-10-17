@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, PermissionsAndroid, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, PermissionsAndroid, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { Ionicons } from "@expo/vector-icons";
@@ -45,9 +45,11 @@ export default function AutoMeasurementScreen() {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activeRef = useRef(false);
   const savedRef = useRef(false);
+  const candidateHandledRef = useRef(false);
 
   const cleanup = useCallback(async (disconnect = true) => {
     activeRef.current = false;
+    candidateHandledRef.current = false;
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
@@ -92,6 +94,7 @@ export default function AutoMeasurementScreen() {
     setDeviceName(null);
     setErrorDetails(null);
     savedRef.current = false;
+    candidateHandledRef.current = false;
     managerRef.current = manager;
 
     try {
@@ -124,13 +127,14 @@ export default function AutoMeasurementScreen() {
           fail("藍牙搜尋失敗", scanError.message);
           return;
         }
-        if (!device || !standardWeightScaleAdapter.matchesAdvertisement({
+        if (!device || candidateHandledRef.current || !standardWeightScaleAdapter.matchesAdvertisement({
           serviceUUIDs: device.serviceUUIDs ?? [],
           manufacturerData: device.manufacturerData,
           name: device.name,
           localName: device.localName,
         })) return;
 
+        candidateHandledRef.current = true;
         manager.stopDeviceScan();
         setSession("connecting");
         setMessage(`已找到 ${device.name || device.localName || "體重秤"}，正在連線…`);
