@@ -1,3 +1,7 @@
+# Legacy openScale platform sources are not used by the Expo app
+android_app/
+arduino_mcu/
+
 # Existing Android build outputs
 *.apk
 *.ap_
@@ -29,4 +33,3 @@ expo-env.d.ts.tmp
 !.eas/
 !.eas/build/
 !.eas/build/ios-unsigned.yml
-
