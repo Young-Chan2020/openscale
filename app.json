@@ -7,6 +7,17 @@
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F5F6F8",
+          "image": "./assets/logo_light.png",
+          "imageWidth": 96,
+          "dark": {
+            "backgroundColor": "#10141C"
+          }
+        }
+      ],
       "expo-router",
       "expo-sqlite",
       [
@@ -18,8 +29,7 @@
           ],
           "bluetoothAlwaysPermission": "允許 openScale 使用藍牙搜尋體重秤"
         }
-      ],
-      "expo-font"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
